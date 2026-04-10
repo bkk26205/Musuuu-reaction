@@ -2,47 +2,153 @@
 <html>
 <head>
     <title>Muskan Bot Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e1e2f, #2c2c54);
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            text-align: center;
+        }
+
+        .box {
+            margin-top: 100px;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 90%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            margin: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .start {
+            background: #00ffae;
+        }
+
+        .stop {
+            background: #ff4d6d;
+            color: white;
+        }
+
+        #status {
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .running { color: #00ffae; }
+        .stopped { color: #ff4d6d; }
+        .loading { color: #ffd166; }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+    </style>
 </head>
-<body style="text-align:center; font-family:sans-serif;">
 
-<h2>🤖 Auto Reaction Bot Panel</h2>
+<body>
 
-<input id="token" placeholder="Enter Bot Token" style="padding:10px;width:260px;">
-<br><br>
+<div class="box">
+    <h2>🤖 Muskan Bot Panel</h2>
 
-<button onclick="startBot()">🚀 Start Bot</button>
-<button onclick="stopBot()">🛑 Stop Bot</button>
+    <input id="token" placeholder="Enter Bot Token">
 
-<p id="status"></p>
+    <br>
+
+    <button class="start" onclick="startBot()">🚀 Start</button>
+    <button class="stop" onclick="stopBot()">🛑 Stop</button>
+
+    <p id="status"></p>
+
+    <div class="footer">
+        ✨ Auto Reaction System
+    </div>
+</div>
 
 <script>
-const API = "https://bot-backend-xegw.onrender.com"; // 👈 change this
+const API = "https://bot-backend-xegw.onrender.com";
+
+function setStatus(text, type) {
+    let el = document.getElementById("status");
+    el.innerText = text;
+    el.className = type;
+}
 
 function startBot() {
     let token = document.getElementById("token").value;
 
+    if (!token) {
+        setStatus("⚠️ Enter token first!", "stopped");
+        return;
+    }
+
+    setStatus("⏳ Starting bot...", "loading");
+
     fetch(API + "/start", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({token: token})
+        body: JSON.stringify({token})
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById("status").innerText = data.msg;
+        setStatus("✅ Bot Running Successfully!", "running");
+    })
+    .catch(err => {
+        setStatus("❌ Error starting bot!", "stopped");
     });
 }
 
 function stopBot() {
     let token = document.getElementById("token").value;
 
+    if (!token) {
+        setStatus("⚠️ Enter token first!", "stopped");
+        return;
+    }
+
+    setStatus("⏳ Stopping bot...", "loading");
+
     fetch(API + "/stop", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({token: token})
+        body: JSON.stringify({token})
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById("status").innerText = data.msg;
+        setStatus("🛑 Bot Stopped!", "stopped");
+    })
+    .catch(err => {
+        setStatus("❌ Error stopping bot!", "stopped");
     });
 }
 </script>
