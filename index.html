@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Muskan Bot Panel</title>
+</head>
+<body style="text-align:center; font-family:sans-serif;">
+
+<h2>🤖 Auto Reaction Bot Panel</h2>
+
+<input id="token" placeholder="Enter Bot Token" style="padding:10px;width:260px;">
+<br><br>
+
+<button onclick="startBot()">🚀 Start Bot</button>
+<button onclick="stopBot()">🛑 Stop Bot</button>
+
+<p id="status"></p>
+
+<script>
+const API = "https://bot-backend-xegw.onrender.com"; // 👈 change this
+
+function startBot() {
+    let token = document.getElementById("token").value;
+
+    fetch(API + "/start", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({token: token})
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("status").innerText = data.msg;
+    });
+}
+
+function stopBot() {
+    let token = document.getElementById("token").value;
+
+    fetch(API + "/stop", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({token: token})
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("status").innerText = data.msg;
+    });
+}
+</script>
+
+</body>
+</html>
